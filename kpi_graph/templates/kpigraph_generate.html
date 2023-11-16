@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KPI Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<style>
+    form{
+        margin-top: 60px;
+        display: inline;
+        justify-content: center;
+    }
+</style>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">PT</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/nbr">NBR </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/core_kpi">Core KPI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/kpi_graph">Core KPI Graph</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <form method="post">
+        <label for="date_filter">Select Date:</label>
+        <select name="date_filter" id="date_filter">
+            {% for date in unique_dates %}
+                <option value="{{ date }}">{{ date }}</option>
+            {% endfor %}
+        </select>
+        <label for="kpi_filter">Select KPI:</label>
+<select name="kpi_filter" id="kpi_filter">
+    {% for kpi_name in unique_kpi_names %}
+        <option value="{{ kpi_name }}">{{ kpi_name }}</option>
+    {% endfor %}
+</select>
+
+<label for="msc_filter">Select MSC:</label>
+<select name="msc_filter" id="msc_filter">
+    {% for msc_name in unique_msc_names %}
+        <option value="{{ msc_name }}">{{ msc_name }}</option>
+    {% endfor %}
+</select>
+<input type="submit" value="Apply Filter">
+    </form>
+
+
+    <canvas id="myChart" style="width:100%;max-width:700px;background-color: aliceblue;"></canvas>
+    <script>
+        // Parse JSON data from Flask
+        var data = {{ data_json | safe }};
+
+        // Extract labels and values
+        var labels = data.map(item => item.Hour);
+        var values = data.map(item => item.Final);
+
+        // Create a bar chart
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Final Values',
+                    data: values,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

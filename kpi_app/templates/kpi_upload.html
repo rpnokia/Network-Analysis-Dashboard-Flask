@@ -20,6 +20,9 @@
     </style>
 </head>
 <body>
+
+    {% include 'includes/navbar.html' %}  
+
     <div class="button-container">
         <form action="/upload_kpi" method="post" enctype="multipart/form-data">
             <input type="file" name="file">
@@ -38,9 +41,6 @@
             <input type="submit" value="List Files">
         </form>
 
-        <form action="/nbr" method="get">
-            <input type="submit" value="NBR">
-        </form>
     </div>
     <h3>File uploaded successfully!!!</h3>
 </body>
